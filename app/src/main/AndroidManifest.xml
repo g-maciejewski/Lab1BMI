@@ -19,7 +19,7 @@
             android:name=".AuthorActivity"
             android:label="@string/aboutAuthorOption"
             android:parentActivityName="pl.edu.pwr.grzegorzmaciejewski.lab1.lab1.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            />
     </application>
 
 </manifest>
