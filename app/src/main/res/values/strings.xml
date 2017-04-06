@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Lab1</string>
+    <string name="mass">Mass</string>
+    <string name="height">Height</string>
+    <string name="bmi">Your BMI is :</string>
+    <string name="tvAboutAuthor">Hello, i like trains</string>
+    <string name="aboutAuthorOption">Author</string>
+    <string name="share">Share</string>
+    <string name="shareMsg">Look at My BMI! how proper it is</string>
+    <string name="saved">Saved</string>
+    <string name="NaN">not a number</string>
+    <string name="inputRange">from %1$.1f to %2$.1f</string>
+    <string name="countBmi">COUNT BMI</string>
+    <string name="saveData">Save data</string>
+    <string name="invalidInput">Invalid input!</string>
+    <string name="invalidMass">Invalid mass!</string>
+    <string name="Normal">Normal BMI</string>
+    <string name="Obesity">Obesity</string>
+    <string name="Overweight">Overweight</string>
+    <string name="Underweight">Underweight</string>
+    <string name="VeryUnderweight">VeryUnderweight</string>
+    <string name ="Units">Units change</string>
+    <string name ="color">color</string>
+    <string-array name="AvaiableUnits">
+        <item>kg/m</item>
+        <item>lb/in</item>
+    </string-array>
+
+</resources>
