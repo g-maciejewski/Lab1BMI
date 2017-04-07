@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         override fun onNothingSelected(parent: AdapterView<*>) {}
     }
 
-        private val textWatcher = object : TextWatcher {
+    private val textWatcher = object : TextWatcher {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun afterTextChanged(s: Editable?) {
@@ -52,8 +52,9 @@ class MainActivity : AppCompatActivity() {
         btnCount.setOnClickListener { showMyBMI() }
         etMass.addTextChangedListener(textWatcher)
         etHeight.addTextChangedListener(textWatcher)
-        btnSave.setOnClickListener { handleSavingInputData() }
+        btnSave.setOnClickListener { saveInput() }
     }
+
     private fun setBmiCounter(selectedItemPosition: Int) {
         counter =
                 if (selectedItemPosition == 0)
@@ -62,21 +63,21 @@ class MainActivity : AppCompatActivity() {
                     CountBMIForLbIn()
     }
 
-///////PRZY URUCHAMIANIU
+    ///////PRZY URUCHAMIANIU
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val textColor = savedInstanceState.getInt("Color")
-        val bmi=savedInstanceState.getString("BMI")
-        tvBmiResult.text=bmi
+        val bmi = savedInstanceState.getString("BMI")
+        tvBmiResult.text = bmi
         tvBmiResult.setTextColor(textColor)
     }
 
-     override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val textColor = tvBmiResult.textColors.defaultColor
-         val bmi=tvBmiResult.text.toString()
-         outState.putString("BMI",bmi)
-        outState.putInt("Color",textColor)
+        val bmi = tvBmiResult.text.toString()
+        outState.putString("BMI", bmi)
+        outState.putInt("Color", textColor)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,33 +90,34 @@ class MainActivity : AppCompatActivity() {
         val inputData = getPreferences(Context.MODE_PRIVATE)
         etMass.setText(inputData.getString("Mass", ""))
         etHeight.setText(inputData.getString("Height", ""))
-        spinner.setSelection(inputData.getInt("Spinner",0))
+        spinner.setSelection(inputData.getInt("Spinner", 0))
     }
+
     private fun createSpinner() {
         val adapter = ArrayAdapter.createFromResource(this, AvaiableUnits, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         spinner.onItemSelectedListener = listener
     }
-////////////////////////////////////
+
+    ////////////////////////////////////
     ////LICZENIE
     ////////////
     private fun showMyBMI() {
         calculateBMI()
         invalidateOptionsMenu()
     }
+
     fun calculateBMI() {
         hideKeyboard(this)
-        if (inputIsGood()) {
-            if (spinner.selectedItemPosition == 0) {
-                counter = CountBMIForKgM()
-                countBMIEurope(java.lang.Float.parseFloat(etMass.text.toString()), java.lang.Float.parseFloat(etHeight.text.toString()))
-            } else {
-                counter = CountBMIForLbIn()
-                countBMIMurica(java.lang.Float.parseFloat(etMass.text.toString()), java.lang.Float.parseFloat(etHeight.text.toString()))
-            }
-        } else
-            tvBmiResult.setText(R.string.invalidInput)
+        if (spinner.selectedItemPosition == 0) {
+            counter = CountBMIForKgM()
+            countBMIEurope(java.lang.Float.parseFloat(etMass.text.toString()), java.lang.Float.parseFloat(etHeight.text.toString()))
+        } else {
+            counter = CountBMIForLbIn()
+            countBMIMurica(java.lang.Float.parseFloat(etMass.text.toString()), java.lang.Float.parseFloat(etHeight.text.toString()))
+        }
+
     }
 
     private fun countBMIEurope(mass: Float?, height: Float?) {
@@ -137,8 +139,9 @@ class MainActivity : AppCompatActivity() {
             tvBmiResult.setText(R.string.invalidInput)
         }
     }
-////////////////////////////
-    private fun handleSavingInputData() {
+
+    ////////////////////////////
+    private fun saveInput() {
         saveInputData()
         showToast()
     }
@@ -174,18 +177,18 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        showShareItemIfBmiIsCounted(menu)
-        prepareSharingIntent()
+        showShareIfBMICounted(menu)
+        sharingIntent()
         return true
     }
 
-    private fun showShareItemIfBmiIsCounted(menu: Menu) {
-        menu.findItem(R.id.share).isVisible = tvBmiResult.text.isNotEmpty()
+    private fun showShareIfBMICounted(menu: Menu) {
+        if(tvBmiResult.text.isNotEmpty())
+        menu.findItem(R.id.share).isVisible = true
     }
 
-    private fun prepareSharingIntent() {
+    private fun sharingIntent() {
         val sendIntent = Intent(Intent.ACTION_SEND)
         sendIntent.putExtra(Intent.EXTRA_TEXT, getSharingMessage())
         sendIntent.type = "text/plain"
@@ -194,7 +197,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getSharingMessage(): String {
         val sharingMessageTemplate = getString(R.string.shareMsg)
-        return String.format(sharingMessageTemplate +" "+ tvBmiResult.text)
+        return String.format(sharingMessageTemplate + " " + tvBmiResult.text)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -214,15 +217,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setResult(bmi: Float) {
         tvBmiResult.setTextColor(chooseColor(bmi))
-        tvBmiResult.text = java.lang.Float.toString(bmi)
-    }
-
-    private fun checkInputData() {
-        val isMassValid = checkMassInput()
-        val isHeightValid = checkHeightInput()
-        val isInputValid = isMassValid && isHeightValid
-        btnSave.isEnabled = isInputValid
-        btnCount.isEnabled = isInputValid
+        tvBmiResult.text = bmi.toString()
     }
 
 
@@ -230,7 +225,15 @@ class MainActivity : AppCompatActivity() {
         val inputManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
     }
-
+/////////SPRAWDZANIE INPUTU
+    private fun checkInputData() {
+        val isMassValid = checkMassInput()
+        val isHeightValid = checkHeightInput()
+        val isInputValid = isMassValid && isHeightValid
+        btnSave.isEnabled = isInputValid
+        btnCount.isEnabled = isInputValid
+    }
+    
     private fun checkMassInput(): Boolean {
         return try {
             checkMass()
@@ -239,12 +242,11 @@ class MainActivity : AppCompatActivity() {
             false
         }
     }
-
     private fun checkMass(): Boolean {
         val isValid = counter.isMassValid(getMass())
         if (!isValid) {
-            val template = getString(R.string.inputRange)
-            etMass.error = String.format(template, counter.minMass, counter.maxMass)
+            val InputRange = getString(R.string.inputRange)
+            etMass.error = String.format(InputRange, counter.minMass, counter.maxMass)
         }
         return isValid
     }
@@ -261,18 +263,12 @@ class MainActivity : AppCompatActivity() {
     private fun checkHeight(): Boolean {
         val isValid = counter.isHeighValid(getHeight())
         if (!isValid) {
-            val template = getString(R.string.inputRange)
-            etHeight.error = String.format(template, counter.minHeigh, counter.maxHeigh)
+            val InputRange = getString(R.string.inputRange)
+            etHeight.error = String.format(InputRange, counter.minHeigh, counter.maxHeigh)
         }
         return isValid
     }
 
-    private fun inputIsGood(): Boolean {
-        if (etMass.text.toString() == "" || etHeight.text.toString() == "")
-            return false
-        else
-            return true
-    }
 
     private fun getMass() = getMassString().toFloat()
     private fun getMassString() = etMass.text.toString()

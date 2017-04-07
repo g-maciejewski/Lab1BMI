@@ -12,18 +12,21 @@
     tools:context="pl.edu.pwr.grzegorzmaciejewski.lab1.lab1.AuthorActivity"
     android:weightSum="1">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawablePadding="0dp"
-        android:gravity="center"
-        android:textSize="18sp" />
-
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="125dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.11"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="10dp"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:layout_weight="0.10"
+        android:text="@string/tvAboutAuthor"/>
+
 
 </LinearLayout>
